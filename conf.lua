@@ -3,9 +3,8 @@ function love.conf(t)
 	t.version = "0.10.2"                -- The LÖVE version this game was made for (string)
 	t.gammacorrect = false              -- Enable gamma-correct rendering, when supported by the system (boolean)
 	t.window.title = "Blockdrop Black Label"
-	t.window.width = 800
-	t.window.height = 600
-	t.window.borderless = false
+	t.window.width = 0
+	t.window.height = 0
 	t.window.resizable = true          -- Let the window be user-resizable (boolean)
 	t.window.fullscreen = true         -- Enable fullscreen (boolean)
 	t.window.vsync = false

@@ -8,10 +8,10 @@ function love.conf(t)
 	t.window.resizable = true          -- Let the window be user-resizable (boolean)
 	t.window.fullscreen = true         -- Enable fullscreen (boolean)
 	t.window.vsync = false
-	t.window.msaa = 0
+	t.window.msaa = 1
 	t.window.display = 1
-	t.modules.mouse = false              -- Enable the mouse module (boolean)
-	t.modules.physics = false            -- Enable the physics module (boolean)
-	t.modules.touch = false              -- Enable the touch module (boolean)
-	t.modules.video = false              -- Enable the video module (boolean)
+	t.modules.mouse = false
+	t.modules.physics = false
+	t.modules.touch = false
+	t.modules.video = false
 end

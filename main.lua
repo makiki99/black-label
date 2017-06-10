@@ -4,14 +4,14 @@ function love.resize(w,h)
 	local ratio = w/h;
 	if ratio > 16/9 then
 		-- screen too wide
-		scr.scale = h/720
+		scr.scale = h/768
 		scr.offx = 0
 	elseif ratio > 4/3 then
-		scr.scale = h/720
-		scr.offx = -160*(16/9-ratio)/(16/9-4/3)
+		scr.scale = h/768
+		scr.offx = -171*(16/9-ratio)/(16/9-4/3)
 	else
-		scr.scale = w/960
-		scr.offx = -160
+		scr.scale = w/1024
+		scr.offx = -171
 	end
 end
 
@@ -22,7 +22,10 @@ function love.load()
 		offy = 0
 	}
 	dt_storage = 0
-	timer = 0
+	gamestate_list = {
+		require "menu"
+	}
+	gamestate = 1
 end
 
 function love.update(dt)
@@ -34,7 +37,7 @@ function love.update(dt)
 end
 
 function updatetick()
-	timer = timer + 1
+	gamestate_list[gamestate].update()
 end
 
 function love.draw()
@@ -42,7 +45,9 @@ function love.draw()
 	love.graphics.translate(scr.offx,scr.offy)
 	--borders for debug purposes
 	love.graphics.setColor(128,0,0)
-	love.graphics.rectangle("line",0,0,1280,720)
+	love.graphics.rectangle("line",0,0,1366,768)
 	love.graphics.setColor(0,0,128)
-	love.graphics.rectangle("line",160,0,960,720)
+	love.graphics.rectangle("line",160,0,1024,768)
+	--gamestate's redraw
+	gamestate_list[gamestate].draw()
 end

@@ -1,5 +1,6 @@
 FPS = 60
 
+test = 222
 function love.resize(w,h)
 	local ratio = w/h;
 	if ratio > 16/9 then
@@ -23,9 +24,9 @@ function love.load()
 	}
 	dt_storage = 0
 	gamestate_list = {
-		require "menu"
+		menu = require "menu"
 	}
-	gamestate = 1
+	gamestate = "menu"
 end
 
 function love.update(dt)

@@ -1,18 +1,19 @@
-menu = {}
+mode_select = {}
 
-menu.options = {
-	{"mode_select", "Start game"},
-	{"keyconfig", "Change keys"}
+mode_select.options = {
+	--{"simple", "Simple"},
+	{"blacklabel", "Black Label"},
+	--{"death", "Deadly Arrange"},
 }
 
-function menu.init()
+function mode_select.init()
 end
 
-function menu.update()
+function mode_select.update()
 	--
 end
 
-function menu.draw()
+function mode_select.draw()
 	--background
 	love.graphics.setColor(0,0,0)
 	love.graphics.rectangle("fill",0,0,1366,768)
@@ -37,7 +38,7 @@ function menu.draw()
 	love.graphics.rectangle("fill",352,48,320,640)
 	--modes
 	love.graphics.setColor(255,255,255)
-	for i,v in ipairs(menu.options) do
+	for i,v in ipairs(mode_select.options) do
 		love.graphics.printf(v[2], 352, 200+i*48, 320, "center")
 	end
 	--timer
@@ -46,4 +47,4 @@ function menu.draw()
 	love.graphics.printf("00:00.00", 352, 724, 320, "center")
 end
 
-return menu
+return mode_select

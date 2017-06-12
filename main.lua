@@ -1,5 +1,8 @@
 FPS = 60
 
+require "bitser"
+require "userconf"
+
 test = 222
 function love.resize(w,h)
 	local ratio = w/h;
@@ -24,9 +27,17 @@ function love.load()
 	}
 	dt_storage = 0
 	gamestate_list = {
-		menu = require "menu"
+		keyconfig = require "keyconfig",
+		start = require "start",
+		menu = require "menu",
+		mode_select = require "mode_select",
 	}
-	gamestate = "menu"
+	set_gamestate("start")
+end
+
+function set_gamestate(id)
+	gamestate = id
+	gamestate_list[id].init()
 end
 
 function love.update(dt)

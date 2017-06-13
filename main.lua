@@ -1,5 +1,6 @@
 FPS = 60
 
+require "basicgame"
 require "minos"
 require "userconf"
 

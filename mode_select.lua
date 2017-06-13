@@ -16,7 +16,7 @@ end
 function mode_select.draw()
 	--background
 	love.graphics.setColor(0,0,0)
-	love.graphics.rectangle("fill",0,0,1366,768)
+	--love.graphics.rectangle("fill",0,0,1366,768)
 	--final screen translation
 	love.graphics.translate(171,0)
 	love.graphics.setColor(255,255,255)

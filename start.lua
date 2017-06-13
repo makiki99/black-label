@@ -2,7 +2,7 @@ start = {}
 
 function start.init()
 	if love.filesystem.exists("keys.txt") then
-		userconf.keys = bitser.loadLoveFile("keys.txt")
+		userconf.load()
 		set_gamestate("menu")
 	else
 		set_gamestate("keyconfig")

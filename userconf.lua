@@ -1,28 +1,41 @@
 userconf = {}
 
-userconf.keys = {
-	up = "up",
-	down = "down",
-	left = "left",
-	right = "right",
-	a = "z",
-	b = "x",
-	c = "c",
-	d = "rshift",
-	menu_up = "up",
-	menu_down = "down",
-	menu_left = "left",
-	menu_right = "right",
-	menu_confirm = "z",
-	menu_cancel = "x",
+local keyfile = love.filesystem.newFile("keys.txt")
+
+userconf.keys = {}
+
+userconf.numalias = {
+	"up",
+	"down",
+	"left",
+	"right",
+	"a",
+	"b",
+	"c",
+	"d",
+	"menu_up",
+	"menu_down" ,
+	"menu_left",
+	"menu_right",
+	"menu_confirm",
+	"menu_cancel",
 }
 
 function userconf.load()
-	userconf.keys = bitser.loadLoveFile("keyconfig.sav")
+	keyfile:open('r')
+	for i in keyfile:lines() do
+		print("read line "..i)
+	end
+	keyfile:close()
 end
 
 function userconf.save()
-	bitser.dumpLoveFile("keyconfig.sav", userconf.keys)
+	keyfile:open('w')
+	for i,v in ipairs(userconf.numalias) do
+		keyfile:write(userconf.keys[v]..'\n')
+		print("written line "..i..' '..v)
+	end
+	keyfile:close()
 end
 
 return userconf

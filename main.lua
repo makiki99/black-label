@@ -1,6 +1,5 @@
 FPS = 60
 
-require "bitser"
 require "userconf"
 
 test = 222
@@ -9,17 +8,21 @@ function love.resize(w,h)
 	if ratio > 16/9 then
 		-- screen too wide
 		scr.scale = h/768
-		scr.offx = 0
+		scr.offx = (w/scr.scale-1366)/2
+		scr.offy = 0
 	elseif ratio > 4/3 then
 		scr.scale = h/768
 		scr.offx = -171*(16/9-ratio)/(16/9-4/3)
+		scr.offy = 0
 	else
 		scr.scale = w/1024
 		scr.offx = -171
+		scr.offy = (h/scr.scale-768)/2
 	end
 end
 
 function love.load()
+	print(love.filesystem.getSaveDirectory())
 	scr = {
 		scale = 1,
 		offx = 0,
@@ -32,7 +35,7 @@ function love.load()
 		menu = require "menu",
 		mode_select = require "mode_select",
 	}
-	set_gamestate("start")
+	set_gamestate("menu")
 end
 
 function set_gamestate(id)
@@ -56,10 +59,10 @@ function love.draw()
 	love.graphics.scale(scr.scale)
 	love.graphics.translate(scr.offx,scr.offy)
 	--borders for debug purposes
-	love.graphics.setColor(128,0,0)
+	love.graphics.setColor(255,0,0)
 	love.graphics.rectangle("line",0,0,1366,768)
-	love.graphics.setColor(0,0,128)
-	love.graphics.rectangle("line",160,0,1024,768)
+	love.graphics.setColor(0,0,255)
+	love.graphics.rectangle("line",171,0,1024,768)
 	--gamestate's redraw
 	gamestate_list[gamestate].draw()
 end

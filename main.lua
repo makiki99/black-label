@@ -1,8 +1,8 @@
 FPS = 60
 
+require "minos"
 require "userconf"
 
-test = 222
 function love.resize(w,h)
 	local ratio = w/h;
 	if ratio > 16/9 then

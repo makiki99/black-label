@@ -1,7 +1,6 @@
 keyconfig = {}
 
 function keyconfig.init()
-	if love.filesystem.exists("")
 end
 
 function keyconfig.update()

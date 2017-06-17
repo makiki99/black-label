@@ -25,9 +25,7 @@ function keyconfig.init()
 	coroutine.resume(keyset)
 end
 
-function keyconfig.update()
-	--
-end
+function keyconfig.update() end
 
 function keyconfig.draw()
 	love.graphics.setFont(love.graphics.newFont(32))

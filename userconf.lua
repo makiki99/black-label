@@ -23,8 +23,11 @@ userconf.numalias = {
 
 function userconf.load()
 	keyfile:open('r')
+	local count = 0
 	for i in keyfile:lines() do
+		count = count+1
 		print("read line "..i)
+		userconf.keys[userconf.numalias[count]] = i
 	end
 	keyfile:close()
 end

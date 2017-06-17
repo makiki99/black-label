@@ -5,12 +5,29 @@ menu.options = {
 	{"keyconfig", "Change keys"}
 }
 
-function menu.init()
+local current_opt = 1
+
+local function keyhandle(key)
+	if key == userconf.keys["menu_up"] then
+		current_opt = current_opt-1
+		if current_opt < 1 then
+			current_opt = #menu.options
+		end
+	elseif key == userconf.keys["menu_down"] then
+		current_opt = current_opt+1
+		if current_opt > #menu.options then
+			current_opt = 1
+		end
+	elseif key == userconf.keys["menu_confirm"] then
+
+	end
 end
 
-function menu.update()
-	--
+function menu.init()
+	love.keypressed = keyhandle;
 end
+
+function menu.update() end
 
 function menu.draw()
 	--background
@@ -20,6 +37,9 @@ function menu.draw()
 	love.graphics.translate(171,0)
 	--board
 	basicgame.drawborder()
+	--cursor
+	love.graphics.setColor(64,64,64)
+	love.graphics.rectangle("fill", 352, 196+current_opt*48, 320, 48)
 	--modes
 	love.graphics.setColor(255,255,255)
 	for i,v in ipairs(menu.options) do

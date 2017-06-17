@@ -35,8 +35,9 @@ function love.load()
 		start = require "start",
 		menu = require "menu",
 		mode_select = require "mode_select",
+		black_label = require "blacklabel"
 	}
-	set_gamestate("menu")
+	set_gamestate("start")
 end
 
 function set_gamestate(id)

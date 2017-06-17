@@ -1,5 +1,9 @@
 basicgame = {}
 
+function basicgame.key(key)
+	return love.keyboard.isDown(userconf.keys[key])
+end
+
 function basicgame.init_state()
 	basicgame.current = 1
 	basicgame.x = 5

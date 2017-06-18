@@ -43,6 +43,7 @@ end
 function set_gamestate(id)
 	gamestate = id
 	gamestate_list[id].init()
+	print("gamestate set: "..gamestate)
 end
 
 function love.update(dt)

@@ -1,6 +1,6 @@
 mode_select = {}
 
-mode_select.options = {
+local options = {
 	--{"simple", "Simple"},
 	{"blacklabel", "Black Label"},
 	--{"death", "Deadly Arrange"},
@@ -8,7 +8,29 @@ mode_select.options = {
 
 local current_opt = 1
 
+local function keyhandle(key)
+	if key == userconf.keys["menu_up"] then
+		current_opt = current_opt-1
+		if current_opt < 1 then
+			current_opt = #options
+		end
+	elseif key == userconf.keys["menu_down"] then
+		current_opt = current_opt+1
+		if current_opt > #options then
+			current_opt = 1
+		end
+	elseif key == userconf.keys["menu_confirm"] then
+		set_gamestate(options[current_opt][1])
+		love.keypressed = nil
+	elseif key == userconf.keys["menu_cancel"] then
+		set_gamestate("menu")
+		love.keypressed = nil
+	end
+end
+
 function mode_select.init()
+	love.keypressed = keyhandle;
+	assert(love.keypressed)
 end
 
 function mode_select.update()
@@ -27,7 +49,7 @@ function mode_select.draw()
 	love.graphics.rectangle("fill", 352, 196+current_opt*48, 320, 48)
 	--modes
 	love.graphics.setColor(255,255,255)
-	for i,v in ipairs(mode_select.options) do
+	for i,v in ipairs(options) do
 		love.graphics.printf(v[2], 352, 200+i*48, 320, "center")
 	end
 	--timer

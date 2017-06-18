@@ -1,6 +1,6 @@
 menu = {}
 
-menu.options = {
+local options = {
 	{"mode_select", "Start game"},
 	{"keyconfig", "Change keys"}
 }
@@ -11,20 +11,22 @@ local function keyhandle(key)
 	if key == userconf.keys["menu_up"] then
 		current_opt = current_opt-1
 		if current_opt < 1 then
-			current_opt = #menu.options
+			current_opt = #options
 		end
 	elseif key == userconf.keys["menu_down"] then
 		current_opt = current_opt+1
-		if current_opt > #menu.options then
+		if current_opt > #options then
 			current_opt = 1
 		end
 	elseif key == userconf.keys["menu_confirm"] then
-
+		love.keypressed = nil
+		set_gamestate(options[current_opt][1])
 	end
 end
 
 function menu.init()
 	love.keypressed = keyhandle;
+	assert(love.keypressed)
 end
 
 function menu.update() end
@@ -42,7 +44,7 @@ function menu.draw()
 	love.graphics.rectangle("fill", 352, 196+current_opt*48, 320, 48)
 	--modes
 	love.graphics.setColor(255,255,255)
-	for i,v in ipairs(menu.options) do
+	for i,v in ipairs(options) do
 		love.graphics.printf(v[2], 352, 200+i*48, 320, "center")
 	end
 	--timer

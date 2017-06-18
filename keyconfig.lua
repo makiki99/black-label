@@ -15,13 +15,14 @@ local keyset = coroutine.create(function()
 	set_gamestate("menu")
 end)
 
-function keyconfig.keycallback(key)
+local function keyhandle(key)
 	lastkey = key
 	coroutine.resume(keyset)
 end
 
 function keyconfig.init()
-	love.keypressed = keyconfig.keycallback
+	love.keypressed = keyhandle
+	assert(love.keypressed)
 	coroutine.resume(keyset)
 end
 

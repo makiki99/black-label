@@ -9,10 +9,4 @@ function start.init()
 	end
 end
 
-function start.update()
-end
-
-function start.draw()
-end
-
 return start

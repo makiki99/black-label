@@ -33,9 +33,7 @@ function mode_select.init()
 	assert(love.keypressed)
 end
 
-function mode_select.update()
-	--
-end
+function mode_select.update() end
 
 function mode_select.draw()
 	--background

@@ -1,13 +1,13 @@
 blacklabel = {}
 
-function mode_select.init()
+function blacklabel.init()
 end
 
-function mode_select.update()
+function blacklabel.update()
 	--
 end
 
-function mode_select.draw()
+function blacklabel.draw()
 	--background
 	love.graphics.setColor(0,0,0)
 	--love.graphics.rectangle("fill",0,0,1366,768)
@@ -16,9 +16,6 @@ function mode_select.draw()
 	basicgame.drawboard()
 	--modes
 	love.graphics.setColor(255,255,255)
-	for i,v in ipairs(mode_select.options) do
-		love.graphics.printf(v[2], 352, 200+i*48, 320, "center")
-	end
 	--timer
 	love.graphics.setColor(255,255,255)
 	love.graphics.setFont(love.graphics.newFont(32))

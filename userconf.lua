@@ -26,17 +26,18 @@ function userconf.load()
 	local count = 0
 	for i in keyfile:lines() do
 		count = count+1
-		print("read line "..i)
 		userconf.keys[userconf.numalias[count]] = i
 	end
 	keyfile:close()
+	for k,v in pairs(userconf.keys) do
+		print(k..' = '..v)
+	end
 end
 
 function userconf.save()
 	keyfile:open('w')
 	for i,v in ipairs(userconf.numalias) do
 		keyfile:write(userconf.keys[v]..'\n')
-		print("written line "..i..' '..v)
 	end
 	keyfile:close()
 end

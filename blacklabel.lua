@@ -1,10 +1,11 @@
 blacklabel = {}
 
 function blacklabel.init()
+	basicgame.init_state()
 end
 
 function blacklabel.update()
-	--
+	basicgame.movement()
 end
 
 function blacklabel.draw()
@@ -14,8 +15,6 @@ function blacklabel.draw()
 	--final screen translation
 	love.graphics.translate(171,0)
 	basicgame.drawboard()
-	--modes
-	love.graphics.setColor(255,255,255)
 	--timer
 	love.graphics.setColor(255,255,255)
 	love.graphics.setFont(love.graphics.newFont(32))

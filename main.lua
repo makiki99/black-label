@@ -35,13 +35,14 @@ function love.load()
 		start = require "start",
 		menu = require "menu",
 		mode_select = require "mode_select",
-		black_label = require "blacklabel",
+		blacklabel = require "blacklabel",
 	}
 	set_gamestate("start")
 end
 
 function set_gamestate(id)
 	gamestate = id
+	assert(gamestate_list[id])
 	gamestate_list[id].init()
 	print("gamestate set: "..gamestate)
 end

@@ -70,3 +70,6 @@ function love.draw()
 	--gamestate's redraw
 	gamestate_list[gamestate].draw()
 end
+
+--standard library extensions
+function math.sign(n) return n>0 and 1 or n<0 and -1 or 0 end

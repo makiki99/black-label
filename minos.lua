@@ -53,4 +53,4 @@ minos.data = {
 	},
 }
 
-return rotations
+return minos

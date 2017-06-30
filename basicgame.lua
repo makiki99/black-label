@@ -113,28 +113,24 @@ function basicgame.drawcurrent()
 	end
 end
 
-function basicgame.hold()
-	if basicgame.can_hold then
-		if basicgame.hold_piece == 0 then
-			basicgame.hold_piece = basicgame.current_piece
-		else
-			basicgame.hold_piece,basicgame.current_piece = basicgame.current_piece,basicgame.hold_piece
-		end
-		basicgame.piece_x = 5
-		basicgame.piece_y = 1
-		basicgame.rotation = 1
-		basicgame.lock_counter = 0
-		basicgame.can_hold = false
-	end
-end
-
 function basicgame.drawnext()
 	for i=1,3 do
 		basicgame.setColorFromPiece(basicgame.next_queue[i])
 		for j=1,4 do
 			local x = minos.data[basicgame.next_queue[i]][1][j][1]
 			local y = minos.data[basicgame.next_queue[i]][1][j][2]
-			love.graphics.rectangle("fill",750+32*x,12+32*y+80*i,32,32)
+			love.graphics.rectangle("fill",736+32*x,12+32*y+80*i,32,32)
+		end
+	end
+end
+
+function basicgame.drawhold()
+	if basicgame.hold_piece ~= 0 then
+		basicgame.setColorFromPiece(basicgame.hold_piece)
+		for j=1,4 do
+			local x = minos.data[basicgame.hold_piece][1][j][1]
+			local y = minos.data[basicgame.hold_piece][1][j][2]
+			love.graphics.rectangle("fill",208+32*x,92+32*y,32,32)
 		end
 	end
 end
@@ -171,6 +167,8 @@ function basicgame.drawboard()
 		end
 	end
 	basicgame.drawcurrent()
+	basicgame.drawnext()
+	basicgame.drawhold()
 end
 
 function basicgame.col_check(offx,offy)
@@ -184,10 +182,30 @@ function basicgame.col_check(offx,offy)
 	return false
 end
 
+function basicgame.hold()
+	if basicgame.can_hold then
+		if basicgame.hold_piece == 0 then
+			basicgame.hold_piece = basicgame.current_piece
+			basicgame.current_piece = basicgame.next_queue[1]
+			basicgame.next_queue[1] = basicgame.next_queue[2]
+			basicgame.next_queue[2] = basicgame.next_queue[3]
+			basicgame.next_queue[3] = basicgame.get_next_piece()
+		else
+			basicgame.hold_piece,basicgame.current_piece = basicgame.current_piece,basicgame.hold_piece
+		end
+		basicgame.piece_x = 5
+		basicgame.piece_y = 1
+		basicgame.rotation = 1
+		basicgame.lock_counter = 0
+		basicgame.can_hold = false
+		basicgame.has_floorkicked = false
+		basicgame.can_instalock = false
+	end
+end
+
 function basicgame.spawn()
 	basicgame.has_floorkicked = false
 	basicgame.can_instalock = false
-	basicgame.has_locked = false
 	basicgame.can_hold = true
 	basicgame.current_piece = basicgame.next_queue[1]
 	basicgame.next_queue[1] = basicgame.next_queue[2]

@@ -19,8 +19,6 @@ function blacklabel.draw()
 	love.graphics.setColor(255,255,255)
 	love.graphics.setFont(love.graphics.newFont(32))
 	love.graphics.printf("00:00.00", 352, 724, 320, "center")
-	--next queue
-	basicgame.drawnext()
 end
 
 return blacklabel

@@ -12,17 +12,18 @@ function basicgame.init_state()
 			basicgame.board[x][y] = 0
 		end
 	end
-	basicgame.current_piece = 2
+	basicgame.current_piece = 1
 	basicgame.rotation = 1
 	basicgame.piece_x = 5
 	basicgame.piece_y = 1
 	basicgame.hold_piece = 0 -- zero means no hold piece
-	basicgame.next_queue = {}
+	basicgame.randomizer_history = {5,6,5,6}
+	basicgame.next_queue = {love.math.random(1, 4),basicgame.get_next_piece(),basicgame.get_next_piece()}
 	basicgame.gravity_counter = 0
 	basicgame.gravity = 5120 -- 256 units = 1 cell/frame
 	basicgame.das_charge = 0
 	basicgame.das = 8
-	basicgame.are_counter = 0
+	basicgame.are_counter = 30
 	basicgame.are = 30
 	basicgame.lock_counter = 0
 	basicgame.lockdelay = 30
@@ -36,6 +37,29 @@ function basicgame.init_state()
 	basicgame.has_locked = false
 	basicgame.can_hold = true
 	--test
+end
+
+function basicgame.get_next_piece()
+	for roll=1,6 do
+		local block = love.math.random(1, 7)
+		local in_history = false
+		if roll ~= 6 then
+			for i=1,4 do
+				if block == basicgame.randomizer_history[i] then
+					in_history = true
+					break
+				end
+			end
+		end
+		if not in_history then
+			--basicgame.randomizer_history = {5,6,5,6}
+			for i=1,3 do
+				basicgame.randomizer_history[i] = basicgame.randomizer_history[i+1]
+			end
+			basicgame.randomizer_history[4] = block
+			return block
+		end
+	end
 end
 
 function basicgame.setColorFromPiece(id)
@@ -89,6 +113,32 @@ function basicgame.drawcurrent()
 	end
 end
 
+function basicgame.hold()
+	if basicgame.can_hold then
+		if basicgame.hold_piece == 0 then
+			basicgame.hold_piece = basicgame.current_piece
+		else
+			basicgame.hold_piece,basicgame.current_piece = basicgame.current_piece,basicgame.hold_piece
+		end
+		basicgame.piece_x = 5
+		basicgame.piece_y = 1
+		basicgame.rotation = 1
+		basicgame.lock_counter = 0
+		basicgame.can_hold = false
+	end
+end
+
+function basicgame.drawnext()
+	for i=1,3 do
+		basicgame.setColorFromPiece(basicgame.next_queue[i])
+		for j=1,4 do
+			local x = minos.data[basicgame.next_queue[i]][1][j][1]
+			local y = minos.data[basicgame.next_queue[i]][1][j][2]
+			love.graphics.rectangle("fill",750+32*x,12+32*y+80*i,32,32)
+		end
+	end
+end
+
 function basicgame.drawboard()
 	basicgame.drawborder()
 	for x=1,10 do
@@ -97,8 +147,26 @@ function basicgame.drawboard()
 				basicgame.setColorFromPiece(basicgame.board[x][y])
 				love.graphics.rectangle("fill",320+32*x,16+32*y,32,32)
 				--temporary until I'll write a shader
-				love.graphics.setColor(0,0,0,64)
+				love.graphics.setColor(0,0,0,80)
 				love.graphics.rectangle("fill",320+32*x,16+32*y,32,32)
+				--stack border
+				love.graphics.setColor(255,255,255,255)
+				--top
+				if basicgame.board[x][y-1]==0 then
+				love.graphics.rectangle("fill",320+32*x,16+32*y,32,2)
+				end
+				--left
+				if basicgame.board[x-1] and basicgame.board[x-1][y]==0 then
+				love.graphics.rectangle("fill",320+32*x,16+32*y,2,32)
+				end
+				--right
+				if basicgame.board[x+1] and basicgame.board[x+1][y]==0 then
+				love.graphics.rectangle("fill",350+32*x,16+32*y,2,32)
+				end
+				--bottom
+				if basicgame.board[x][y+1]==0 then
+				love.graphics.rectangle("fill",320+32*x,46+32*y,32,2)
+				end
 			end
 		end
 	end
@@ -121,9 +189,17 @@ function basicgame.spawn()
 	basicgame.can_instalock = false
 	basicgame.has_locked = false
 	basicgame.can_hold = true
+	basicgame.current_piece = basicgame.next_queue[1]
+	basicgame.next_queue[1] = basicgame.next_queue[2]
+	basicgame.next_queue[2] = basicgame.next_queue[3]
+	basicgame.next_queue[3] = basicgame.get_next_piece()
 	basicgame.piece_x = 5
 	basicgame.piece_y = 1
 	basicgame.rotation = 1
+	basicgame.lock_counter = 0
+	if basicgame.key("d") then
+		basicgame.hold()
+	end
 	if basicgame.key("a") then
 		basicgame.rotate_left()
 		basicgame.pressedA = true
@@ -142,9 +218,7 @@ function basicgame.spawn()
 	else
 		basicgame.pressedC = false
 	end
-	if basicgame.key("d") then
-		--stubbed for now - hold button
-	end
+	basicgame.gravity_counter = basicgame.gravity
 end
 
 function basicgame.lock()
@@ -256,7 +330,25 @@ function basicgame.rotate_right()
 end
 
 function basicgame.movement()
+	--d-pad
+	local x_axis = 0
+	local y_axis = 0
+	if basicgame.key("left") then
+		x_axis = x_axis - 1
+	end
+	if basicgame.key("right") then
+		x_axis = x_axis + 1
+	end
+	if basicgame.key("up") then
+		y_axis = y_axis - 1
+	end
+	if basicgame.key("down") then
+		y_axis = y_axis + 1
+	end
 	if basicgame.are_counter == 0 then
+		if basicgame.key("d") then
+			basicgame.hold()
+		end
 		--rotation buttons
 		if basicgame.key("a") then
 			if not basicgame.pressedA then
@@ -281,24 +373,6 @@ function basicgame.movement()
 			basicgame.pressedC = true
 		else
 			basicgame.pressedC = false
-		end
-		if basicgame.key("d") then
-			--stubbed for now - hold button
-		end
-		--d-pad
-		local x_axis = 0
-		local y_axis = 0
-		if basicgame.key("left") then
-			x_axis = x_axis - 1
-		end
-		if basicgame.key("right") then
-			x_axis = x_axis + 1
-		end
-		if basicgame.key("up") then
-			y_axis = y_axis - 1
-		end
-		if basicgame.key("down") then
-			y_axis = y_axis + 1
 		end
 		--movement
 		if x_axis == 0 then
@@ -343,6 +417,13 @@ function basicgame.movement()
 			basicgame.lockflash = basicgame.lockflash - 1
 		else
 			basicgame.are_counter = basicgame.are_counter - 1
+			if x_axis == 0 then
+				basicgame.das_charge = 0
+			elseif math.sign(basicgame.das_charge) == x_axis then
+				basicgame.das_charge = basicgame.das_charge + x_axis
+			else
+				basicgame.das_charge = x_axis
+			end
 			if basicgame.are_counter == 0 then
 				basicgame.spawn()
 			end

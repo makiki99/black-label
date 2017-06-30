@@ -12,6 +12,10 @@ function basicgame.init_state()
 			basicgame.board[x][y] = 0
 		end
 	end
+	basicgame.lineanim = {}
+	for i=1,20 do
+		basicgame.lineanim[i] = 0
+	end
 	basicgame.current_piece = 1
 	basicgame.rotation = 1
 	basicgame.piece_x = 5
@@ -20,14 +24,18 @@ function basicgame.init_state()
 	basicgame.randomizer_history = {5,6,5,6}
 	basicgame.next_queue = {love.math.random(1, 4),basicgame.get_next_piece(),basicgame.get_next_piece()}
 	basicgame.gravity_counter = 0
-	basicgame.gravity = 5120 -- 256 units = 1 cell/frame
 	basicgame.das_charge = 0
-	basicgame.das = 8
-	basicgame.are_counter = 30
-	basicgame.are = 30
 	basicgame.lock_counter = 0
-	basicgame.lockdelay = 30
+	basicgame.are_counter = 30
+	basicgame.gravity = 5120 -- 256 units = 1 cell/frame
+	basicgame.das = 8
+	basicgame.are = 10
+	basicgame.lockdelay = 18
 	basicgame.lockflash = 0
+	basicgame.linedelay = 2
+	basicgame.lineanimtime = 8
+	--info
+	basicgame.lines_cleared = 0
 	--flags
 	basicgame.pressedA = false
 	basicgame.pressedB = false
@@ -247,6 +255,27 @@ function basicgame.lock()
 	end
 	basicgame.are_counter = basicgame.are
 	basicgame.lockflash = 2
+	--check line clears
+	for y=0,20 do
+		local filled = true
+		for x=1,10 do
+			if basicgame.board[x][y]==0 then
+				filled = false
+				break
+			end
+		end
+		if filled then
+			basicgame.lines_cleared = basicgame.lines_cleared + 1
+			if y>0 then
+				basicgame.lineanim[y] = basicgame.lineanimtime
+			end
+			for yy=y, 1,-1 do
+				for xx=1,10 do
+					basicgame.board[xx][yy] = basicgame.board[xx][yy-1]
+				end
+			end
+		end
+	end
 end
 
 function basicgame.kick()
@@ -348,6 +377,7 @@ function basicgame.rotate_right()
 end
 
 function basicgame.movement()
+	basicgame.lines_cleared = 0
 	--d-pad
 	local x_axis = 0
 	local y_axis = 0

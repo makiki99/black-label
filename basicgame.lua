@@ -143,6 +143,15 @@ function basicgame.drawhold()
 	end
 end
 
+function basicgame.drawlineanim()
+	for i=1,20 do
+		if basicgame.lineanim[i]>0 then
+			local percentage = (basicgame.lineanim[i]/basicgame.lineanimtime)
+			love.graphics.rectangle("fill",352,16+32*i+16*(1-percentage),320,32*percentage)
+		end
+	end
+end
+
 function basicgame.drawboard()
 	basicgame.drawborder()
 	for x=1,10 do
@@ -175,6 +184,7 @@ function basicgame.drawboard()
 		end
 	end
 	basicgame.drawcurrent()
+	basicgame.drawlineanim()
 	basicgame.drawnext()
 	basicgame.drawhold()
 end
@@ -254,7 +264,6 @@ function basicgame.lock()
 		basicgame.board[x][y] = basicgame.current_piece
 	end
 	basicgame.are_counter = basicgame.are
-	basicgame.lockflash = 2
 	--check line clears
 	for y=0,20 do
 		local filled = true
@@ -275,6 +284,9 @@ function basicgame.lock()
 				end
 			end
 		end
+	end
+	if basicgame.lines_cleared == 0 then
+		basicgame.lockflash = 2
 	end
 end
 
@@ -348,9 +360,15 @@ function basicgame.rotate_left()
 		basicgame.rotation = 4
 	end
 	if not basicgame.col_check(0,0) then
+		if basicgame.has_floorkicked then
+			basicgame.can_instalock = true
+		end
 		return
 	end
 	if basicgame.kick() then
+		if basicgame.has_floorkicked then
+			basicgame.can_instalock = true
+		end
 		return
 	end
 	basicgame.rotation = basicgame.rotation+1
@@ -378,6 +396,11 @@ end
 
 function basicgame.movement()
 	basicgame.lines_cleared = 0
+	for i=1,20 do
+		if basicgame.lineanim[i] > 0 then
+			basicgame.lineanim[i] = basicgame.lineanim[i] - 1
+		end
+	end
 	--d-pad
 	local x_axis = 0
 	local y_axis = 0

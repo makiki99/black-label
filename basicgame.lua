@@ -34,6 +34,7 @@ function basicgame.init_state()
 	basicgame.lockflash = 0
 	basicgame.linedelay = 2
 	basicgame.lineanimtime = 8
+	basicgame.gameover_frame = 0
 	--info
 	basicgame.lines_cleared = 0
 	--flags
@@ -218,6 +219,12 @@ function basicgame.hold()
 		basicgame.can_hold = false
 		basicgame.has_floorkicked = false
 		basicgame.can_instalock = false
+		basicgame.gravity_counter = basicgame.gravity
+		while basicgame.gravity_counter > 256 and not basicgame.col_check(0,1) do
+			basicgame.piece_y = basicgame.piece_y + 1
+			basicgame.gravity_counter = basicgame.gravity_counter - 256
+			basicgame.lock_counter = 0
+		end
 	end
 end
 
@@ -255,6 +262,11 @@ function basicgame.spawn()
 		basicgame.pressedC = false
 	end
 	basicgame.gravity_counter = basicgame.gravity
+	while basicgame.gravity_counter > 256 and not basicgame.col_check(0,1) do
+		basicgame.piece_y = basicgame.piece_y + 1
+		basicgame.gravity_counter = basicgame.gravity_counter - 256
+		basicgame.lock_counter = 0
+	end
 end
 
 function basicgame.lock()

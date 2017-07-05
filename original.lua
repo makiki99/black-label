@@ -95,6 +95,19 @@ function original.draw()
 	love.graphics.printf(basicgame.level, 720, 500, 80, "center")
 	love.graphics.line(720, 537, 800, 537)
 	love.graphics.printf(basicgame.level >= 900 and "999" or basicgame.level+100-basicgame.level%100, 720, 540, 80, "center")
+	--win/lose
+	if basicgame.endframe > 45 then
+		love.graphics.setColor(0,0,0,196)
+		love.graphics.rectangle("fill", 352, 242, 320, 48)
+		love.graphics.setColor(255,255,255)
+		love.graphics.printf(basicgame.is_game_won and "Congratulations!" or "Game over...", 352, 250, 320, "center")
+	end
+	if basicgame.endframe > 60 then
+		love.graphics.setColor(0,0,0,196)
+		love.graphics.rectangle("fill", 352, 290, 320, 48)
+		love.graphics.setColor(255,255,255)
+		love.graphics.printf("Score: 0", 352, 298, 320, "center")
+	end
 end
 
 return original

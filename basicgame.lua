@@ -87,7 +87,9 @@ function basicgame.get_next_piece()
 end
 
 function basicgame.setColorFromPiece(id)
-	if id == 1 then
+	if basicgame.endframe > 0 and not basicgame.is_game_won then
+		love.graphics.setColor(64,64,64,255)
+	elseif id == 1 then
 		love.graphics.setColor(255,0,0,255)
 	elseif id == 2 then
 		love.graphics.setColor(0,255,255,255)

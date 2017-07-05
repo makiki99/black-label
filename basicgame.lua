@@ -26,15 +26,17 @@ function basicgame.init_state()
 	basicgame.gravity_counter = 0
 	basicgame.das_charge = 0
 	basicgame.lock_counter = 0
-	basicgame.are_counter = 30
+	basicgame.are_counter = 0
+	--settings
 	basicgame.gravity = 5120 -- 256 units = 1 cell/frame
-	basicgame.das = 8
-	basicgame.are = 10
-	basicgame.lockdelay = 18
+	basicgame.das = 14
+	basicgame.are = 25
+	basicgame.lockdelay = 30
 	basicgame.lockflash = 0
-	basicgame.linedelay = 2
+	basicgame.linedelay = 40
 	basicgame.lineanimtime = 8
 	basicgame.gameover_frame = 0
+	basicgame.level = 1
 	--info
 	basicgame.lines_cleared = 0
 	--flags
@@ -43,9 +45,19 @@ function basicgame.init_state()
 	basicgame.pressedC = false
 	basicgame.has_floorkicked = false
 	basicgame.can_instalock = false
+	basicgame.has_spawned = false
 	basicgame.has_locked = false
 	basicgame.can_hold = true
 	--test
+end
+
+function basicgame.add_default_events(gamestate)
+	print(gamestate)
+	gamestate.on_hold = function() end
+	gamestate.on_spawn = function() end
+	gamestate.on_lock = function() end
+	gamestate.on_clear = function(lines) end
+	print(gamestate)
 end
 
 function basicgame.get_next_piece()
@@ -225,6 +237,7 @@ function basicgame.hold()
 			basicgame.gravity_counter = basicgame.gravity_counter - 256
 			basicgame.lock_counter = 0
 		end
+		gamestate_list[gamestate].on_hold()
 	end
 end
 
@@ -267,6 +280,7 @@ function basicgame.spawn()
 		basicgame.gravity_counter = basicgame.gravity_counter - 256
 		basicgame.lock_counter = 0
 	end
+	gamestate_list[gamestate].on_spawn()
 end
 
 function basicgame.lock()
@@ -276,7 +290,10 @@ function basicgame.lock()
 		basicgame.board[x][y] = basicgame.current_piece
 	end
 	basicgame.are_counter = basicgame.are
+
+	gamestate_list[gamestate].on_lock()
 	--check line clears
+	local lines_cleared = 0
 	for y=0,20 do
 		local filled = true
 		for x=1,10 do
@@ -286,7 +303,7 @@ function basicgame.lock()
 			end
 		end
 		if filled then
-			basicgame.lines_cleared = basicgame.lines_cleared + 1
+			lines_cleared = lines_cleared + 1
 			if y>0 then
 				basicgame.lineanim[y] = basicgame.lineanimtime
 			end
@@ -297,8 +314,10 @@ function basicgame.lock()
 			end
 		end
 	end
-	if basicgame.lines_cleared == 0 then
+	if lines_cleared == 0 then
 		basicgame.lockflash = 2
+	else
+		gamestate_list[gamestate].on_clear()
 	end
 end
 
@@ -407,6 +426,8 @@ function basicgame.rotate_right()
 end
 
 function basicgame.movement()
+	basicgame.has_spawned = false
+	basicgame.has_locked = false
 	basicgame.lines_cleared = 0
 	for i=1,20 do
 		if basicgame.lineanim[i] > 0 then

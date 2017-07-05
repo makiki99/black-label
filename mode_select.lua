@@ -1,7 +1,7 @@
 mode_select = {}
 
 local options = {
-	--{"simple", "Simple"},
+	{"original", "Original"},
 	{"blacklabel", "Black Label"},
 	--{"death", "Deadly Arrange"},
 }

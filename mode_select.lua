@@ -47,13 +47,10 @@ function mode_select.draw()
 	love.graphics.rectangle("fill", 352, 196+current_opt*48, 320, 48)
 	--modes
 	love.graphics.setColor(255,255,255)
+	love.graphics.setFont(love.graphics.newFont(32))
 	for i,v in ipairs(options) do
 		love.graphics.printf(v[2], 352, 200+i*48, 320, "center")
 	end
-	--timer
-	love.graphics.setColor(255,255,255)
-	love.graphics.setFont(love.graphics.newFont(32))
-	love.graphics.printf("00:00.00", 352, 724, 320, "center")
 end
 
 return mode_select

@@ -38,7 +38,7 @@ function basicgame.init_state()
 	basicgame.gameover_frame = 0
 	basicgame.level = 1
 	--info
-	basicgame.lines_cleared = 0
+	basicgame.framecount = 0
 	--flags
 	basicgame.pressedA = false
 	basicgame.pressedB = false
@@ -166,6 +166,27 @@ function basicgame.drawlineanim()
 	end
 end
 
+function basicgame.drawtimer()
+	local function leftpad2(str)
+		str = ""..str
+		if #str==1 then
+			return "0"..str
+		else
+			return str
+		end
+	end
+	local framecount = basicgame.framecount
+	local minutes = math.floor(framecount/3600)
+	framecount = framecount - minutes*3600
+	local seconds = math.floor(framecount/60)
+	framecount = framecount - seconds*60
+	local centiseconds = math.floor(100/60*framecount)
+	local timerstr = ""..leftpad2(minutes)..":"..leftpad2(seconds).."."..leftpad2(centiseconds)
+	love.graphics.setColor(255,255,255)
+	love.graphics.setFont(love.graphics.newFont(32))
+	love.graphics.printf(timerstr, 352, 716, 320, "center")
+end
+
 function basicgame.drawboard()
 	basicgame.drawborder()
 	for x=1,10 do
@@ -197,14 +218,11 @@ function basicgame.drawboard()
 			end
 		end
 	end
-	--timer
-	love.graphics.setColor(255,255,255)
-	love.graphics.setFont(love.graphics.newFont(32))
-	love.graphics.printf("00:00.00", 352, 716, 320, "center")
 	basicgame.drawcurrent()
 	basicgame.drawlineanim()
 	basicgame.drawnext()
 	basicgame.drawhold()
+	basicgame.drawtimer()
 end
 
 function basicgame.col_check(offx,offy)
@@ -443,6 +461,7 @@ function basicgame.rotate_right()
 end
 
 function basicgame.movement()
+	basicgame.framecount = basicgame.framecount + 1
 	basicgame.has_spawned = false
 	basicgame.has_locked = false
 	basicgame.lines_cleared = 0

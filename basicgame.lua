@@ -44,6 +44,7 @@ function basicgame.init_state()
 	basicgame.pressedB = false
 	basicgame.pressedC = false
 	basicgame.has_floorkicked = false
+	basicgame.has_accepted_floorkick = false
 	basicgame.can_instalock = false
 	basicgame.has_spawned = false
 	basicgame.has_locked = false
@@ -243,6 +244,7 @@ end
 
 function basicgame.spawn()
 	basicgame.has_floorkicked = false
+	basicgame.has_accepted_floorkick = false
 	basicgame.can_instalock = false
 	basicgame.can_hold = true
 	basicgame.current_piece = basicgame.next_queue[1]
@@ -318,6 +320,7 @@ function basicgame.lock()
 		basicgame.lockflash = 2
 	else
 		gamestate_list[gamestate].on_clear(lines_cleared)
+		basicgame.are_counter = basicgame.are_counter + basicgame.linedelay
 	end
 end
 
@@ -391,14 +394,16 @@ function basicgame.rotate_left()
 		basicgame.rotation = 4
 	end
 	if not basicgame.col_check(0,0) then
-		if basicgame.has_floorkicked then
+		if basicgame.has_accepted_floorkick then
 			basicgame.can_instalock = true
 		end
 		return
 	end
 	if basicgame.kick() then
-		if basicgame.has_floorkicked then
+		if basicgame.has_accepted_floorkick then
 			basicgame.can_instalock = true
+		elseif basicgame.has_floorkicked then
+			basicgame.has_accepted_floorkick = true
 		end
 		return
 	end
@@ -414,9 +419,17 @@ function basicgame.rotate_right()
 		basicgame.rotation = 1
 	end
 	if not basicgame.col_check(0,0) then
-		return;
+		if basicgame.has_accepted_floorkick then
+			basicgame.can_instalock = true
+		end
+		return
 	end
 	if basicgame.kick() then
+		if basicgame.has_accepted_floorkick then
+			basicgame.can_instalock = true
+		elseif basicgame.has_floorkicked then
+			basicgame.has_accepted_floorkick = true
+		end
 		return
 	end
 	basicgame.rotation = basicgame.rotation-1

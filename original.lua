@@ -57,6 +57,7 @@ local function process_level()
 	basicgame.linedelay = speedcurve[speed_ptr][4]
 	basicgame.lockdelay = speedcurve[speed_ptr][5]
 	basicgame.das = speedcurve[speed_ptr][6]
+	basicgame.lineanimtime = basicgame.linedelay>6 and basicgame.linedelay or 6
 end
 
 function original.on_spawn()
@@ -67,12 +68,19 @@ function original.on_spawn()
 end
 
 function original.on_clear(lines)
-	basicgame.level = basicgame.level + lines
+	if lines == 4 then
+		basicgame.level = basicgame.level + 6
+	elseif lines == 3 then
+		basicgame.level = basicgame.level + 4
+	else
+		basicgame.level = basicgame.level + lines
+	end
 	process_level()
 end
 
 function original.init()
 	basicgame.init_state()
+	process_level()
 end
 
 function original.update()
@@ -90,6 +98,7 @@ function original.draw()
 	love.graphics.setColor(255,255,255)
 	love.graphics.setFont(love.graphics.newFont(32))
 	love.graphics.printf("00:00.00", 352, 724, 320, "center")
+	love.graphics.printf(basicgame.level, 700, 500, 200, "center")
 end
 
 return original

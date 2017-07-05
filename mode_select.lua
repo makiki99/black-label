@@ -24,7 +24,6 @@ local function keyhandle(key)
 		love.keypressed = nil
 	elseif key == userconf.keys["menu_cancel"] then
 		set_gamestate("menu")
-		love.keypressed = nil
 	end
 end
 

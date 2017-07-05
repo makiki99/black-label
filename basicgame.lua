@@ -39,6 +39,8 @@ function basicgame.init_state()
 	basicgame.level = 1
 	--info
 	basicgame.framecount = 0
+	basicgame.endframe = 0
+	basicgame.is_game_won = false
 	--flags
 	basicgame.pressedA = false
 	basicgame.pressedB = false
@@ -304,6 +306,9 @@ function basicgame.spawn()
 		basicgame.gravity_counter = basicgame.gravity_counter - 256
 		basicgame.lock_counter = 0
 	end
+	if basicgame.col_check(0,0) then
+		basicgame.endframe = 1
+	end
 	gamestate_list[gamestate].on_spawn()
 end
 
@@ -461,10 +466,16 @@ function basicgame.rotate_right()
 end
 
 function basicgame.movement()
+	if basicgame.endframe > 0 then
+		if basicgame.endframe > 120 then
+			if basicgame.key("a") or basicgame.key("b") or basicgame.key("c") or basicgame.key("d") then
+				set_gamestate("menu")
+			end
+		end
+		basicgame.endframe = basicgame.endframe +1
+		return
+	end
 	basicgame.framecount = basicgame.framecount + 1
-	basicgame.has_spawned = false
-	basicgame.has_locked = false
-	basicgame.lines_cleared = 0
 	for i=1,20 do
 		if basicgame.lineanim[i] > 0 then
 			basicgame.lineanim[i] = basicgame.lineanim[i] - 1

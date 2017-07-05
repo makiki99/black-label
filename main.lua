@@ -33,6 +33,7 @@ function love.load()
 	gamestate_list = {
 		keyconfig = require "keyconfig",
 		start = require "start",
+		terminate = require "terminate",
 		menu = require "menu",
 		mode_select = require "mode_select",
 		original = require "original",

@@ -2,7 +2,8 @@ menu = {}
 
 local options = {
 	{"mode_select", "Start game"},
-	{"keyconfig", "Change keys"}
+	{"keyconfig", "Change keys"},
+	{"terminate", "Exit game"}
 }
 
 local current_opt = 1

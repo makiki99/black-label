@@ -317,7 +317,7 @@ function basicgame.lock()
 	if lines_cleared == 0 then
 		basicgame.lockflash = 2
 	else
-		gamestate_list[gamestate].on_clear()
+		gamestate_list[gamestate].on_clear(lines_cleared)
 	end
 end
 

@@ -3,6 +3,7 @@ FPS = 60
 require "basicgame"
 require "minos"
 require "userconf"
+require "shaders"
 
 function love.resize(w,h)
 	local ratio = w/h;

@@ -74,6 +74,7 @@ function original.on_clear(lines)
 end
 
 function original.init()
+	speed_ptr = 1
 	basicgame.init_state()
 	process_level()
 end

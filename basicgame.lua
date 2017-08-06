@@ -87,9 +87,7 @@ function basicgame.get_next_piece()
 end
 
 function basicgame.setColorFromPiece(id)
-	if basicgame.endframe > 0 and not basicgame.is_game_won then
-		love.graphics.setColor(64,64,64,255)
-	elseif id == 1 then
+	if id == 1 then
 		love.graphics.setColor(255,0,0,255)
 	elseif id == 2 then
 		love.graphics.setColor(0,255,255,255)
@@ -197,10 +195,13 @@ function basicgame.drawboard()
 		for y=1,20 do
 			if basicgame.board[x][y]>0 then
 				basicgame.setColorFromPiece(basicgame.board[x][y])
+				if basicgame.endframe > 0 and not basicgame.is_game_won then
+					love.graphics.setShader(shaders.grayscale_stack)
+				else
+					love.graphics.setShader(shaders.stack)
+				end
 				love.graphics.rectangle("fill",320+32*x,16+32*y,32,32)
-				--temporary until I'll write a shader
-				love.graphics.setColor(0,0,0,80)
-				love.graphics.rectangle("fill",320+32*x,16+32*y,32,32)
+				love.graphics.setShader()
 				--stack border
 				love.graphics.setColor(255,255,255,255)
 				--top

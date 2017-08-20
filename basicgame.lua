@@ -87,7 +87,9 @@ function basicgame.get_next_piece()
 end
 
 function basicgame.setColorFromPiece(id)
-	if id == 1 then
+	if basicgame.endframe > 0 and not basicgame.is_game_won then
+		love.graphics.setColor(128,128,128,255)
+	elseif id == 1 then
 		love.graphics.setColor(255,0,0,255)
 	elseif id == 2 then
 		love.graphics.setColor(0,255,255,255)
@@ -128,12 +130,15 @@ function basicgame.drawcurrent()
 			love.graphics.setColor(255,255,255,255)
 		else
 			basicgame.setColorFromPiece(basicgame.current_piece)
+			love.graphics.setShader(shaders.currentMino)
+			shaders.currentMino:send("lockpercent", basicgame.lock_counter/basicgame.lockdelay)
 		end
 		for i=1,4 do
 			local x = minos.data[basicgame.current_piece][basicgame.rotation][i][1] + basicgame.piece_x
 			local y = minos.data[basicgame.current_piece][basicgame.rotation][i][2] + basicgame.piece_y
 			love.graphics.rectangle("fill",320+32*x,16+32*y,32,32)
 		end
+		love.graphics.setShader()
 	end
 end
 
@@ -195,11 +200,7 @@ function basicgame.drawboard()
 		for y=1,20 do
 			if basicgame.board[x][y]>0 then
 				basicgame.setColorFromPiece(basicgame.board[x][y])
-				if basicgame.endframe > 0 and not basicgame.is_game_won then
-					love.graphics.setShader(shaders.grayscale_stack)
-				else
-					love.graphics.setShader(shaders.stack)
-				end
+				love.graphics.setShader(shaders.stack)
 				love.graphics.rectangle("fill",320+32*x,16+32*y,32,32)
 				love.graphics.setShader()
 				--stack border

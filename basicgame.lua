@@ -165,12 +165,15 @@ function basicgame.drawhold()
 end
 
 function basicgame.drawlineanim()
+	love.graphics.setShader(shaders.lineClear)
 	for i=1,20 do
 		if basicgame.lineanim[i]>0 then
 			local percentage = (basicgame.lineanim[i]/basicgame.lineanimtime)
-			love.graphics.rectangle("fill",352,16+32*i+16*(1-percentage),320,32*percentage)
+			shaders.lineClear:send("animpercent",percentage);
+			love.graphics.rectangle("fill",352,16+32*i,320,32)
 		end
 	end
+	love.graphics.setShader()
 end
 
 function basicgame.drawtimer()
@@ -198,7 +201,7 @@ function basicgame.drawboard()
 	basicgame.drawborder()
 	for x=1,10 do
 		for y=1,20 do
-			if basicgame.board[x][y]>0 then
+			if basicgame.lineanim[y]==0 and basicgame.board[x][y]>0 then
 				basicgame.setColorFromPiece(basicgame.board[x][y])
 				love.graphics.setShader(shaders.stack)
 				love.graphics.rectangle("fill",320+32*x,16+32*y,32,32)
@@ -340,11 +343,11 @@ function basicgame.lock()
 			if y>0 then
 				basicgame.lineanim[y] = basicgame.lineanimtime
 			end
-			for yy=y, 1,-1 do
-				for xx=1,10 do
-					basicgame.board[xx][yy] = basicgame.board[xx][yy-1]
-				end
-			end
+			-- for yy=y, 1,-1 do
+			-- 	for xx=1,10 do
+			-- 		basicgame.board[xx][yy] = basicgame.board[xx][yy-1]
+			-- 	end
+			-- end
 		end
 	end
 	if lines_cleared == 0 then
@@ -470,6 +473,19 @@ function basicgame.rotate_right()
 end
 
 function basicgame.movement()
+	for i=1,20 do
+		if basicgame.lineanim[i] > 0 then
+			--check line collapse
+			if basicgame.lineanim[i] == 1 then
+				for y=i, 1,-1 do
+					for x=1,10 do
+						basicgame.board[x][y] = basicgame.board[x][y-1]
+					end
+				end
+			end
+			basicgame.lineanim[i] = basicgame.lineanim[i] - 1
+		end
+	end
 	if basicgame.endframe > 0 then
 		if basicgame.endframe > 120 then
 			if basicgame.key("a") or basicgame.key("b") or basicgame.key("c") or basicgame.key("d") then
@@ -480,11 +496,6 @@ function basicgame.movement()
 		return
 	end
 	basicgame.framecount = basicgame.framecount + 1
-	for i=1,20 do
-		if basicgame.lineanim[i] > 0 then
-			basicgame.lineanim[i] = basicgame.lineanim[i] - 1
-		end
-	end
 	--d-pad
 	local x_axis = 0
 	local y_axis = 0
@@ -552,7 +563,7 @@ function basicgame.movement()
 			elseif y_axis == -1 then
 				basicgame.gravity_counter = 5120
 			end
-			while basicgame.gravity_counter > 256 and not basicgame.col_check(0,1) do
+			while basicgame.gravity_counter >= 256 and not basicgame.col_check(0,1) do
 				basicgame.piece_y = basicgame.piece_y + 1
 				basicgame.gravity_counter = basicgame.gravity_counter - 256
 				basicgame.lock_counter = 0

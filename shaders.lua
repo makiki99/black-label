@@ -1,5 +1,15 @@
 shaders = {}
 
+shaders.lineClear = love.graphics.newShader([[
+	extern number animpercent;
+	vec4 effect (vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
+	{
+		vec4 texcolor = Texel(texture, texture_coords);
+		vec2 location = screen_coords/love_ScreenSize.xy;
+		return texcolor * color * animpercent;
+	}
+]])
+
 shaders.currentMino = love.graphics.newShader([[
 	extern number lockpercent;
 	vec4 effect (vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)

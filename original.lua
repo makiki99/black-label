@@ -35,6 +35,49 @@ local speedcurve = {
 	{900,5120,12,4,17,6, 2.5},
 }
 
+local grades = {
+	{0, "30th kyu"},
+	{20, "29th kyu"},
+	{40, "28th kyu"},
+	{60, "27th kyu"},
+	{80, "26th kyu"},
+	{100, "25th kyu"},
+	{120, "24th kyu"},
+	{140, "23rd kyu"},
+	{160, "22nd kyu"},
+	{180, "21st kyu"},
+	{200, "20th kyu"},
+	{230, "19th kyu"},
+	{260, "18th kyu"},
+	{290, "17th kyu"},
+	{320, "16th kyu"},
+	{350, "15th kyu"},
+	{380, "14th kyu"},
+	{410, "13th kyu"},
+	{440, "12th kyu"},
+	{470, "11th kyu"},
+	{500, "10th kyu"},
+	{530, "9th kyu"},
+	{560, "8th kyu"},
+	{590, "7th kyu"},
+	{620, "6th kyu"},
+	{650, "5th kyu"},
+	{680, "4th kyu"},
+	{710, "3rd kyu"},
+	{745, "2nd kyu"},
+	{780, "1st kyu"},
+	{815, "1st dan"},
+	{850, "2nd dan"},
+	{885, "3rd dan"},
+	{920, "4th dan"},
+	{955, "5th dan"},
+	{990, "6th dan"},
+	{1025, "7th dan"},
+	{1050, "8th dan"},
+	{1090, "9th dan"},
+	{1150, "10th dan"},
+}
+
 local speed_ptr = 1
 local function process_level()
 	if basicgame.level > 999 then
@@ -56,6 +99,15 @@ local function process_level()
 	original.scoremult = speedcurve[speed_ptr][7]
 	basicgame.lineanimtime = basicgame.linedelay>6 and basicgame.linedelay or 6
 	print(original.score)
+end
+
+local function get_grade(score)
+	for i=speed_ptr,#grades-1 do
+		if original.score < grades[i+1][1] then
+			return grades[i][2]
+		end
+	end
+	return grades[#grades][2]
 end
 
 function original.on_spawn()
@@ -122,7 +174,7 @@ function original.draw()
 		love.graphics.setColor(0,0,0,196)
 		love.graphics.rectangle("fill", 352, 290, 320, 48)
 		love.graphics.setColor(255,255,255)
-		love.graphics.printf("Score: "..math.floor(original.score), 352, 298, 320, "center")
+		love.graphics.printf("Grade: "..get_grade(), 352, 298, 320, "center")
 	end
 end
 
